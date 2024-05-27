@@ -1,3 +1,6 @@
+const path = require("path");
+const fs = require("fs");
+
 const posts = require("../db");
 
 //Lista dei posts
@@ -74,8 +77,30 @@ const create = (req, res) => {
   });
 };
 
+//Download
+const download = (req, res) => {
+  const slug = req.params.slug;
+  const requestedPost = posts.find((p) => p.slug === slug);
+
+  if (posts.includes(requestedPost)) {
+    const file = requestedPost.image;
+    const filePath = path.join(__dirname, `../public/imgs/posts/${file}`);
+
+    if (fs.existsSync(filePath)) {
+      res.download(filePath);
+    } else {
+      res.status(404).send("File non trovato");
+    }
+  } else {
+    res
+      .status(404)
+      .send(`Post ${slug} non trovato, impossibile effetuare il download`);
+  }
+};
+
 module.exports = {
   index,
   show,
   create,
+  download,
 };

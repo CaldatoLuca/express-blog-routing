@@ -13,4 +13,7 @@ router.get("/create", postController.create);
 //Dettaglio post
 router.get("/:slug", postController.show);
 
+//Download
+router.get("/:slug/download", postController.download);
+
 module.exports = router;
