@@ -5,6 +5,12 @@ const app = express();
 //Importo il router
 const postRouter = require("./routers/postRouter");
 
+//MIDDLEWARES
+//visualizzazione file statici - img
+app.use(express.static("public"));
+//body parser
+app.use(express.json());
+
 //HOME
 app.get("/", (req, res) => {
   res.send("Benvenuti nel mio blog");
