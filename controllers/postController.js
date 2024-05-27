@@ -12,7 +12,10 @@ const index = (req, res) => {
       posts.map(
         (p) =>
           (html += `<li>
+        <div>
         <h3>${p.title}</h3>
+        <a href="/posts/${p.slug}">Show</a>
+        </div>
         <img src="/imgs/posts/${p.image}" alt="${p.title}" width="100">
         <div>${p.content}</div>
         <h5>${p.tags.map((t) => `#${t}`).join(" ")}</h5>
@@ -45,7 +48,11 @@ const show = (req, res) => {
     res.format({
       html: () => {
         let html = `<h1>Richiesta fatta per post ${slug}</h1>`;
-        html += `<h3>${requestedPost.title}</h3>
+        html += `
+        <div>
+        <h3>${requestedPost.title}</h3>
+        <a href="/posts/${requestedPost.slug}/download">Download Image</a>
+        </div>
           <img src="/imgs/posts/${requestedPost.image}" alt="${
           requestedPost.title
         }" width="100">
