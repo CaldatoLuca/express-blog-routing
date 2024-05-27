@@ -36,6 +36,8 @@ const index = (req, res) => {
 const show = (req, res) => {
   const slug = req.params.slug;
   const requestedPost = posts.find((p) => p.slug === slug);
+  const baseUrl = `${req.protocol}://${req.get("host")}`;
+  const imageUrl = `${baseUrl}/imgs/posts/${requestedPost.image}`;
 
   //Controllo se requstedPost esiste
   if (posts.includes(requestedPost)) {
@@ -52,8 +54,9 @@ const show = (req, res) => {
       },
       json: () => {
         res.json({
-          richiesta: `Richiesta fatta per post ${slug}`,
+          status: `succes`,
           post: requestedPost,
+          image_url: imageUrl,
         });
       },
     });
@@ -87,7 +90,7 @@ const download = (req, res) => {
     const filePath = path.join(__dirname, `../public/imgs/posts/${file}`);
 
     if (fs.existsSync(filePath)) {
-      res.download(filePath);
+      res.send("File: " + filePath);
     } else {
       res.status(404).send("File non trovato");
     }
