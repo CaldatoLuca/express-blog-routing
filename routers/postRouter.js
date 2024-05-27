@@ -6,4 +6,6 @@ const postController = require("../controllers/postController");
 
 router.get("/", postController.index);
 
+router.get("/:slug", postController.show);
+
 module.exports = router;
