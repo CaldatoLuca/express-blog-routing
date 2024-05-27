@@ -59,7 +59,23 @@ const show = (req, res) => {
   }
 };
 
+//Create
+const create = (req, res) => {
+  res.format({
+    html: () => {
+      res.send("<h1>Creazione nuovo Post</h1>");
+    },
+    default: () => {
+      res.status(406).json({
+        message: `Richiesta ${req.headers.accept} non supportata`,
+        status: 406,
+      });
+    },
+  });
+};
+
 module.exports = {
   index,
   show,
+  create,
 };
