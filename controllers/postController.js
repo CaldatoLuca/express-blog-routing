@@ -1,11 +1,15 @@
+//Importo path e filesystem
 const path = require("path");
 const fs = require("fs");
 
+//raccolgo i posts dal db
 const posts = require("../db");
 
-//Lista dei posts
+//Metodo Index per la lista dei posts
 const index = (req, res) => {
+  //Controllo il tipo di risposta
   res.format({
+    //HTML
     html: () => {
       let html = "<h1>Lista dei Posts - Index</h1> <ul>";
 
@@ -26,6 +30,8 @@ const index = (req, res) => {
 
       res.send(html);
     },
+
+    //JSON
     json: () => {
       res.json({
         posts: posts,
@@ -35,17 +41,22 @@ const index = (req, res) => {
   });
 };
 
-//Show del singolo post
+//Metodo Show per mostrare il singolo post per :slug
 const show = (req, res) => {
+  //raccolgo lo slug inserito, come parametro e ottengo l'oggetto post corrispoindente
   const slug = req.params.slug;
   const requestedPost = posts.find((p) => p.slug === slug);
 
-  //Controllo se requstedPost esiste
+  //Controllo se requstedPost esiste e incluso nel mio array
   if (posts.includes(requestedPost)) {
+    //genero i url da dare in risposta al json
     const baseUrl = `${req.protocol}://${req.get("host")}`;
     const imageUrl = `${baseUrl}/imgs/posts/${requestedPost.image}`;
     const downloadUrl = `${baseUrl}/posts/${slug}/download`;
+
+    //Controllo il tipo di risposta
     res.format({
+      //HTML
       html: () => {
         let html = `<h1>Richiesta fatta per post ${slug}</h1>`;
         html += `
@@ -60,6 +71,8 @@ const show = (req, res) => {
           <h5>${requestedPost.tags.map((t) => `#${t}`).join(" ")}</h5>`;
         res.send(html);
       },
+
+      //JSON
       json: () => {
         res.json({
           status: `succes`,
@@ -76,10 +89,14 @@ const show = (req, res) => {
 
 //Create
 const create = (req, res) => {
+  //Controllo il tipo di richiesta
   res.format({
+    //HTML
     html: () => {
       res.send("<h1>Creazione nuovo Post</h1>");
     },
+
+    //Le altre richieste danno status 406 con relativo errore
     default: () => {
       res.status(406).json({
         message: `Richiesta ${req.headers.accept} non supportata`,
@@ -91,14 +108,19 @@ const create = (req, res) => {
 
 //Download
 const download = (req, res) => {
+  //raccolgo lo slug inserito, come parametro e ottengo l'oggetto post corrispoindente
   const slug = req.params.slug;
   const requestedPost = posts.find((p) => p.slug === slug);
 
+  //Controllo se requstedPost esiste e incluso nel mio array
   if (posts.includes(requestedPost)) {
-    const file = requestedPost.image;
-    const filePath = path.join(__dirname, `../public/imgs/posts/${file}`);
+    //creo la path assoluta del file
+    const fileName = requestedPost.image;
+    const filePath = path.join(__dirname, `../public/imgs/posts/${fileName}`);
 
+    //controllo se il file esiste nella mia directory
     if (fs.existsSync(filePath)) {
+      //scarico il file
       res.download(filePath);
     } else {
       res.status(404).send("File non trovato");
